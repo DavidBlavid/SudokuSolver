@@ -19,8 +19,9 @@ h1 {
 .round-box {
 
 	border-radius: 8px;
-	background: #fa7846;
-	border: 1px solid #DB592A;
+	
+	background: rgba(255, 255, 255, 0.4);
+	border: 1px solid rgba(255, 255, 255, 0.4);
 
 	margin: 2px;
 
@@ -52,11 +53,25 @@ h1 {
 	
 }
 
-.selector-red {
+.box-red {
 	
 	background: #f22 !important;
 	border: 1px solid #B00 !important;
 	
+}
+
+.box-orange {
+	
+	background: #fa7846 !important;
+	border: 1px solid #DB592A !important;
+		
+}
+
+.box-black {
+
+	background: rgba(0, 0, 0, 0.5) !important;
+	border: 1px solid rgba(0, 0, 0, 0.7) !important;
+
 }
 
 .table-inner {

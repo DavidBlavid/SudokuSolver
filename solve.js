@@ -1,9 +1,8 @@
 
 $(".round-box").on('input', function(){
 	
-	let current_element = $(this);
-	
 	checkAll();
+	
 })
 
 function clean() {
@@ -17,7 +16,8 @@ function clean() {
 			let current_element = document.getElementById(((i*9) + j + 1).toString());
 			
 			current_element.value = "";
-			$(current_element).removeClass("selector-red");
+			$(current_element).removeClass("box-red");
+			$(current_element).removeClass("box-orange");
 		
 		}
 	
@@ -61,15 +61,35 @@ function checkAll(){
 		
 		for (let j = 0; j < 9; j++){
 			
+			let current_element = document.getElementById(((i*9) + j + 1).toString());
+			
 			if(board[i][j] != 0 && !isValid(board, i, j, board[i][j])) {
 				
 				//highlight cell red
-				document.getElementById(((i*9) + j + 1).toString()).classList.add("selector-red");
+				$(current_element).removeClass("box-orange");
+				current_element.classList.add("box-red");
 			
 			} else {
 				
-				//remove highlight
-				$(document.getElementById(((i*9) + j + 1).toString())).removeClass("selector-red");
+				//highlight cell orange
+				$(current_element).removeClass("box-red");
+				current_element.classList.add("box-orange");
+				
+			}
+			
+			if(isNaN(board[i][j])){
+				
+				//highlight cell red
+				$(current_element).removeClass("box-orange");
+				current_element.classList.add("box-red");
+				
+			}
+			
+			if(board[i][j] == 0) {
+				
+				//dont highlight
+				$(current_element).removeClass("box-red");
+				$(current_element).removeClass("box-orange");
 				
 			}
 			
@@ -110,7 +130,7 @@ function run() {
 				
 				//highlight cell red and dont solve
 				willRun = false;
-				document.getElementById(pos).classList.add("selector-red");
+				document.getElementById(pos).classList.add("box-red");
 				
 			}
 		
@@ -127,7 +147,7 @@ function run() {
 				
 				//highlight cell red and dont solve
 				willRun = false;
-				document.getElementById(((i*9) + j + 1).toString()).classList.add("selector-red");
+				document.getElementById(((i*9) + j + 1).toString()).classList.add("box-red");
 			
 			}
 			
