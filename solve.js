@@ -1,26 +1,82 @@
 
 $(".round-box").on('input', function(){
 	
-	let element = $(this);
+	let current_element = $(this);
 	
-	element.removeClass("selector-red");
+	checkAll();
 })
 
 function clean() {
 
+	//clear all cells
 	for (let i = 0; i < 9; i++){
 		
 		for (let j = 0; j < 9; j++){
 		
-			let element = document.getElementById(((i*9) + j + 1).toString());
+			//remove highlighting and remove input
+			let current_element = document.getElementById(((i*9) + j + 1).toString());
 			
-			element.value = "";
-			$(element).removeClass("selector-red");
+			current_element.value = "";
+			$(current_element).removeClass("selector-red");
 		
 		}
 	
 	}
 
+}
+
+function checkAll(){
+	
+	//prepare array
+	let board = new Array(9);
+
+	for (i = 0; i < board.length; i++) {
+	  board[i] = new Array(9);
+	}
+	
+	//fill the array with inputs
+	for (let i = 0; i < 9; i++){
+		
+		for (let j = 0; j < 9; j++){
+		
+			//get single input
+			let pos = ((i*9) + j + 1).toString();
+			let current_element = document.getElementById(pos);
+			let current_value = current_element.value;
+		
+			//is it a proper input?
+			if(!isNaN(Number(current_value)) && current_value.length < 2){
+		
+				//insert value in array
+				board[i][j] = Number(current_value);
+				
+			}
+		
+		}
+	
+	}
+	
+	//check for discrepancies
+	for (let i = 0; i < 9; i++){
+		
+		for (let j = 0; j < 9; j++){
+			
+			if(board[i][j] != 0 && !isValid(board, i, j, board[i][j])) {
+				
+				//highlight cell red
+				document.getElementById(((i*9) + j + 1).toString()).classList.add("selector-red");
+			
+			} else {
+				
+				//remove highlight
+				$(document.getElementById(((i*9) + j + 1).toString())).removeClass("selector-red");
+				
+			}
+			
+		}
+		
+	}
+	
 }
 
 function run() {
@@ -34,9 +90,6 @@ function run() {
 	
 	//array to check if will run
 	var willRun = true;
-	
-	//count number of inputs
-	var inputs = 0;
 	
 	//fill the array with inputs
 	for (let i = 0; i < 9; i++){
@@ -52,17 +105,6 @@ function run() {
 		
 				//insert value in array
 				board[i][j] = Number(current);
-				
-				//if empty, insert 0
-				if(board[i][j] == undefined)  {
-					
-					board[i][j] = 0;
-					
-				} else {
-					
-					inputs++;
-					
-				}
 				
 			} else {
 				
@@ -114,7 +156,7 @@ function run() {
 	var next = findNext(board, 0, 0);
 	
 	//can solve and is there at least one empty cell?
-	if(willRun && inputs >= 20 && next.x != -1) {
+	if(willRun && next.x != -1) {
 		
 		//finally, solve the board
 		board = solve(board, next.x, next.y);
@@ -136,11 +178,13 @@ function run() {
 		
 			}
 			
+		} else {
+			
+			alert("Could not find a solution!");
+			
 		}
 	
 	}
-	
-	if(inputs < 20) alert("Please input at least 20 Numbers");
 
 }
 
