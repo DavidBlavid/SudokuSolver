@@ -254,7 +254,7 @@ function run() {
 		//was a solution found?
 		if(board.works){
 			
-			if(checked && moveCounter < 10000){
+			if(checked && move_counter < 10000){
 				
 				for (let i = 0; i < 9; i++){
 			
