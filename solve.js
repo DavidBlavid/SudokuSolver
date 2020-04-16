@@ -44,6 +44,13 @@ $(".round-box").on('input', function(){
 	
 })
 
+$("#secret").on('click', function(){
+	
+	document.getElementById("secret").innerHTML = "DER ARMINATOR";
+	
+})
+
+
 function clean() {
 
 	clearInterval(timer);
