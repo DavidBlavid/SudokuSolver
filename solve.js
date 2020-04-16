@@ -1,5 +1,44 @@
+var timer;
+var timerActive = false;
+
+var moves;
+var move_counter;
+var move_current = 0;
+
+function frame(){
+	
+	let current = moves[move_current];
+	move_current++;
+
+	let current_element = document.getElementById((current.y + current.x * 9 + 1).toString());
+	
+	
+	//dont inset value if value is 0
+	if(current.value != 0){
+	
+		current_element.value = current.value;
+		$(current_element).removeClass("box-black");
+	
+	} else {
+		
+		//color cell black
+		current_element.classList.add("box-black");
+		
+	}
+	
+	//animation end reached, stop animating
+	if(move_current == move_counter) {
+		
+		clearInterval(timer);
+		timerActive = false
+		
+	}
+	
+}
 
 $(".round-box").on('input', function(){
+	
+	clearInterval(timer);
 	
 	checkAll();
 	
@@ -7,17 +46,21 @@ $(".round-box").on('input', function(){
 
 function clean() {
 
+	clearInterval(timer);
+	timerActive = false;
+
 	//clear all cells
 	for (let i = 0; i < 9; i++){
 		
 		for (let j = 0; j < 9; j++){
 		
-			//remove highlighting and remove input
+			//remove highlighting and input
 			let current_element = document.getElementById(((i*9) + j + 1).toString());
 			
 			current_element.value = "";
 			$(current_element).removeClass("box-red");
 			$(current_element).removeClass("box-orange");
+			$(current_element).removeClass("box-black");
 		
 		}
 	
@@ -62,6 +105,8 @@ function checkAll(){
 		for (let j = 0; j < 9; j++){
 			
 			let current_element = document.getElementById(((i*9) + j + 1).toString());
+			
+			$(current_element).removeClass("box-black");
 			
 			if(board[i][j] != 0 && !isValid(board, i, j, board[i][j])) {
 				
@@ -108,6 +153,21 @@ function run() {
 	  board[i] = new Array(9);
 	}
 	
+	//create copy of the array
+	var copy = new Array(9);
+	
+	for (i = 0; i < board.length; i++) {
+	  copy[i] = new Array(9);
+	}
+	
+	//is checkbox checked?
+	var checked = document.getElementById("run_visual").checked;
+	
+	//these variables keep track of the moves being made
+	moves = new Array(10000);
+	move_current = 0;
+	move_counter = 0;
+
 	//array to check if will run
 	var willRun = true;
 	
@@ -178,24 +238,57 @@ function run() {
 	//can solve and is there at least one empty cell?
 	if(willRun && next.x != -1) {
 		
+		for (let i = 0; i < 9; i++){
+			
+			for (let j = 0; j < 9; j++){
+			
+				copy[i][j] = board[i][j];
+			
+			}
+		
+		}
+		
 		//finally, solve the board
 		board = solve(board, next.x, next.y);
 	
 		//was a solution found?
 		if(board.works){
 			
-			for (let i = 0; i < 9; i++){
+			if(checked && moveCounter < 10000){
+				
+				for (let i = 0; i < 9; i++){
 			
-				for (let j = 0; j < 9; j++){
+					for (let j = 0; j < 9; j++){
+				
+						if(copy[i][j] == 0){
+				
+							document.getElementById(((i*9) + j + 1).toString()).classList.add("box-black");
+						
+						}
+				
+					}
+		
+			}
+				timer = setInterval(frame, 20);
+				
+			} else {
+				
+				for (let i = 0; i < 9; i++){
 			
-					if(board.board[i][j] != 0){
-			
-						document.getElementById(((i*9) + j + 1).toString()).value = board.board[i][j];
-			
+					for (let j = 0; j < 9; j++){
+				
+						if(board.board[i][j] != 0){
+				
+							document.getElementById(((i*9) + j + 1).toString()).value = board.board[i][j];
+				
+						}
+				
 					}
 			
 				}
-		
+				
+				if(checked) alert("Maximum number of moves was reached! Can not show a replay");
+				
 			}
 			
 		} else {
@@ -205,6 +298,42 @@ function run() {
 		}
 	
 	}
+
+}
+
+function changeValue(board, x, y, val) {
+
+	//check if max number of moves has been reached
+	if(move_counter < 10000){
+
+		//record move
+		moves[move_counter] = {x: x, y: y, value: val};
+		
+		if(move_counter > 0){
+			
+			//sometimes identical entries are added in a row
+			let prevX = moves[(move_counter-1)].x;
+			let prevY = moves[(move_counter-1)].y;
+			let prevVal = moves[(move_counter-1)].value;
+			
+			//if all are identical, this frame will be overwritten
+			if(!(prevX == x && prevY == y && prevVal == val)){
+				
+				move_counter++;
+				
+			}
+			
+		} else {
+			
+			move_counter++;
+			
+		}
+		
+	}
+	
+	//insert value and return
+	board[x][y] = val;
+	return board;
 
 }
 
@@ -222,7 +351,7 @@ function solve(board, y, x){
 		//console.log("[" + x + "][" + y + "] isValid at end?");
 		if(isValid(board, x, y, i)){
 		
-			board[x][y] = i;
+			changeValue(board, x, y, i);
        
 			returnObject.works = true;
 			returnObject.board = board;
@@ -232,7 +361,7 @@ function solve(board, y, x){
       
     }
 	
-	board[x][y] = 0;
+	changeValue(board, x, y, 0);
 	
     returnObject.works = false;
 	returnObject.board = board;
@@ -242,12 +371,12 @@ function solve(board, y, x){
   
     for(let i = 1; i < 10; i++){
 	  
-	  //console.log("[" + x + "][" + y + "] isValid at rec? (" + i + ")");
+	//console.log("[" + x + "][" + y + "] isValid at rec? (" + i + ")");
       if(isValid(board, x, y, i)){
 		  
 		//console.log("[" + x + "][" + y + "] (" + i + ") is valid!");
 		
-		board[x][y] = i;
+		changeValue(board, x, y, i);
 		
 		//recursion is right here
 		var solveObject = solve(board, next.x, next.y);
@@ -266,7 +395,7 @@ function solve(board, y, x){
     
     if(board[x][y] >= 9 && !isValid(board, x, y, board[x][y])) {
       
-		board[x][y] = 0;
+		changeValue(board, x, y, 0);
 	  
 		returnObject.works = false;
 		returnObject.board = board;
@@ -276,7 +405,7 @@ function solve(board, y, x){
     
   }
   
-  board[x][y] = 0;
+  changeValue(board, x, y, 0);
   
   returnObject.works = false;
   returnObject.board = board;

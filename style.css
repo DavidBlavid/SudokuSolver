@@ -40,7 +40,7 @@ h1 {
 
 	text-align: center;
 
-	transition: 300ms;
+	transition: 100ms;
 	
 	font-family: 'Josefin Sans', sans-serif;
 	font-size: 20pt;
@@ -90,6 +90,41 @@ h1 {
 
 }
 
+.button-container {
+	
+	float: none;
+    display: block;
+	
+	align: center;
+	
+	width: 300px;
+	
+	margin: auto;
+	
+	position: relative;
+	
+	text-align: center;
+	
+}
+
+.check-visual {
+	
+	font-family: 'Josefin Sans', sans-serif;
+	font-size: 10pt;
+	
+	
+	align: right;
+	
+	
+}
+
+.checkbox-container {
+	
+	padding-left: 40px;
+	margin-bottom: 40px;
+	
+}
+
 .footer {
 	
 	position: fixed;
@@ -121,6 +156,8 @@ button {
 	margin-top: 30px;
 
 	padding: 4px;
-	width: 100px;
+	width: 6rem;
+	
+	text-align: center;
 
 }
