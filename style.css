@@ -93,9 +93,6 @@ h1 {
 .button-container {
 	
 	float: none;
-    display: block;
-	
-	align: center;
 	
 	width: 300px;
 	
@@ -109,19 +106,57 @@ h1 {
 
 .check-visual {
 	
+	align: right;
+	
+}
+
+.small-text {
+	
 	font-family: 'Josefin Sans', sans-serif;
 	font-size: 10pt;
 	
-	
-	align: right;
-	
+	margin-top: 6px;
+	margin-bottom: 2px;
 	
 }
 
 .checkbox-container {
 	
-	padding-left: 40px;
-	margin-bottom: 40px;
+	width: 150px;
+	height: auto;
+	
+	padding: 4px;
+	
+	border-radius: 8px;
+	
+	background: rgba(255, 255, 255, 0.4);
+	
+}
+
+.frame-button-container {
+	
+	margin: 0 auto;
+	display: block;
+	
+	text-align: center;
+	
+}
+
+.frame-buttons {
+	
+	width: 1.5rem;
+	height: 1.5rem;
+	
+	text-align: center;
+	padding-left: 5px;
+	padding-bottom: 3px;
+	
+	margin-top: 6px;
+	
+	margin-left: 0;
+	margin-right: 0;
+	
+	border-radius: 0;
 	
 }
 
@@ -130,6 +165,8 @@ h1 {
 	position: fixed;
 	width: 100%;
 	background-color: rgba(255, 255, 255, 0.1);
+	
+	display: block;
 	
 	margin: 0px;
 	padding: 2px;
@@ -145,7 +182,7 @@ h1 {
 	
 }
 
-button {
+.big-button {
 
 	border-radius: 14px;
 

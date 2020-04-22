@@ -8,6 +8,7 @@
 		<link rel="icon" href="icon.png">
 		<link rel="stylesheet" type="text/css" href="style.css">
 		<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@500&display=swap" rel="stylesheet"> 
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
 	</head>
 
@@ -319,18 +320,30 @@
 			
 				<td>
 					
-					<button onclick="clean()">Clear</button>
-					<button onclick="run()">Solve!</button>
+					<button class="big-button" onclick="cleanAll()">Clear</button>
+					<button class="big-button" onclick="run()">Solve!</button>
 					
 				</td>
 					
 				<td>
 					<div class="checkbox-container">
 						<input class="check-visual" type="checkbox" id="run_visual">
-						<label class="check-visual" for="run_visual">
+						<label class="small-text" for="run_visual">
 							<nobr>Run Visually</nobr>
 						</label>
-					
+						
+						<div class="frame-button-container">
+						
+							<button id="to-start" class="frame-buttons" onclick="toStart()">⏮</button>
+							<button id="previous" class="frame-buttons" onclick="previous()">❮</button>
+							<button id="play" class="frame-buttons" onclick="play()">⏸</button>
+							<button id="next" class="frame-buttons" onclick="nextFrame()">❯</button>
+							<button id="to-end" class="frame-buttons" onclick="toEnd()">⏭</button>
+							
+						</div>
+						
+						<p id="frame-counter" class="small-text">- / -</p>
+						
 					</div>
 				</td>
 			

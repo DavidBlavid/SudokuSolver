@@ -1,17 +1,21 @@
 var timer;
 var timerActive = false;
+var paused = false;
 
 var moves;
 var move_counter;
 var move_current = 0;
 
+var solved = false;
+
 function frame(){
+	
+	document.getElementById("frame-counter").innerHTML = move_current + " / " + (move_counter-1);
 	
 	let current = moves[move_current];
 	move_current++;
 
 	let current_element = document.getElementById((current.y + current.x * 9 + 1).toString());
-	
 	
 	//dont inset value if value is 0
 	if(current.value != 0){
@@ -22,6 +26,7 @@ function frame(){
 	} else {
 		
 		//color cell black
+		current_element.value = "";
 		current_element.classList.add("box-black");
 		
 	}
@@ -30,7 +35,9 @@ function frame(){
 	if(move_current == move_counter) {
 		
 		clearInterval(timer);
-		timerActive = false
+		timerActive = false;
+		
+		document.getElementById("play").innerHTML = "▶";
 		
 	}
 	
@@ -39,19 +46,177 @@ function frame(){
 $(".round-box").on('input', function(){
 	
 	clearInterval(timer);
+	timerActive = false;
+	
+	solved = false;
 	
 	checkAll();
 	
 })
 
+//secret :)
 $("#secret").on('click', function(){
 	
 	document.getElementById("secret").innerHTML = "DER ARMINATOR";
 	
 })
 
+//media control buttons
+function toStart(){
+	
+	if(solved){
+	
+		//reset move counter
+		move_current = 0;
+		
+		document.getElementById("frame-counter").innerHTML = "0 / " + (move_counter-1);
+		
+		//clear all cells
+		for (let i = 0; i < 9; i++){
+			
+			for (let j = 0; j < 9; j++){
+			
+				//remove highlighting and input
+				let current_element = document.getElementById(((i*9) + j + 1).toString());
+				
+				current_element.value = "";
+				$(current_element).removeClass("box-red");
+				$(current_element).removeClass("box-orange");
+				current_element.classList.add("box-black");
+			
+			}
+		
+		}
+		
+	}
+		
+}
 
-function clean() {
+function previous(){
+	
+	if(solved){
+	
+		if(move_current > 0) {
+		
+			let temp = move_current;
+			move_current = 0;
+		
+			//clear all cells
+			for (let i = 0; i < 9; i++){
+				
+				for (let j = 0; j < 9; j++){
+				
+					//remove highlighting and input
+					let current_element = document.getElementById(((i*9) + j + 1).toString());
+					
+					current_element.value = "";
+					$(current_element).removeClass("box-red");
+					$(current_element).removeClass("box-orange");
+					current_element.classList.add("box-black");
+				
+				}
+			
+			}
+			
+			for (i = 0; i < temp-1; i++){
+				
+				frame();
+				
+			}
+			
+		}
+		
+	}
+	
+}
+
+function play(){
+	
+	if(solved){
+		
+		if(move_current < move_counter){
+			
+			paused = !paused;
+			
+			if(paused){
+			
+				clearInterval(timer);
+				timerActive = false;
+				document.getElementById("play").innerHTML = "▶";
+			
+			} else {
+				
+				timer = setInterval(frame, 20);
+				timerActive = true;
+				document.getElementById("play").innerHTML = "⏸";
+				
+			}
+			
+		} else {
+			
+			toStart();
+			timer = setInterval(frame, 20);
+			timerActive = true;
+			document.getElementById("play").innerHTML = "⏸";
+			
+		}
+		
+	}
+	
+}
+
+function nextFrame(){
+	
+	if(solved) {
+		
+		if(move_current < move_counter){
+			
+			frame();
+			
+		}	
+		
+	}	
+	
+}
+
+function toEnd(){
+	
+	if(solved){
+		
+		move_current = 0;
+		
+		//clear all cells
+		for (let i = 0; i < 9; i++){
+				
+			for (let j = 0; j < 9; j++){
+				
+				//remove highlighting and input
+				let current_element = document.getElementById(((i*9) + j + 1).toString());
+					
+				current_element.value = "";
+				$(current_element).removeClass("box-red");
+				$(current_element).removeClass("box-orange");
+				current_element.classList.add("box-black");
+				
+			}
+			
+		}
+			
+		for (i = 0; i < move_counter; i++){
+				
+			frame();
+				
+		}
+			
+	}
+	
+}
+
+function cleanAll() {
+
+	document.getElementById("frame-counter").innerHTML = "- / -";
+
+	solved = false;
 
 	clearInterval(timer);
 	timerActive = false;
@@ -76,6 +241,8 @@ function clean() {
 }
 
 function checkAll(){
+	
+	document.getElementById("frame-counter").innerHTML = "- / -";
 	
 	//prepare array
 	let board = new Array(9);
@@ -261,6 +428,8 @@ function run() {
 		//was a solution found?
 		if(board.works){
 			
+			solved = true;
+			
 			if(checked && move_counter < 10000){
 				
 				for (let i = 0; i < 9; i++){
@@ -276,7 +445,9 @@ function run() {
 					}
 		
 			}
-				timer = setInterval(frame, 20);
+			
+			timer = setInterval(frame, 20);
+			timerActive = true;
 				
 			} else {
 				
@@ -300,6 +471,8 @@ function run() {
 			
 		} else {
 			
+			document.getElementById("frame-counter").innerHTML = "- / -";
+			solved = false;
 			alert("Could not find a solution!");
 			
 		}
@@ -381,9 +554,9 @@ function solve(board, y, x){
 	//console.log("[" + x + "][" + y + "] isValid at rec? (" + i + ")");
       if(isValid(board, x, y, i)){
 		  
-		//console.log("[" + x + "][" + y + "] (" + i + ") is valid!");
-		
 		changeValue(board, x, y, i);
+		  
+		//console.log("[" + x + "][" + y + "] (" + i + ") is valid!");
 		
 		//recursion is right here
 		var solveObject = solve(board, next.x, next.y);
